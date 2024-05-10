@@ -16,6 +16,7 @@
 package keeper
 
 import (
+	"fmt"
 	"math/big"
 
 	tmtypes "github.com/tendermint/tendermint/types"
@@ -154,6 +155,7 @@ func (k *Keeper) ApplyTransaction(ctx sdk.Context, tx *ethtypes.Transaction) (*t
 
 	cfg, err := k.EVMConfig(ctx, sdk.ConsAddress(ctx.BlockHeader().ProposerAddress), k.eip155ChainID)
 	if err != nil {
+		fmt.Println("Log: Fail to load evm config")
 		return nil, errorsmod.Wrap(err, "failed to load evm config")
 	}
 	txConfig := k.TxConfig(ctx, tx.Hash())
@@ -162,6 +164,7 @@ func (k *Keeper) ApplyTransaction(ctx sdk.Context, tx *ethtypes.Transaction) (*t
 	signer := ethtypes.MakeSigner(cfg.ChainConfig, big.NewInt(ctx.BlockHeight()))
 	msg, err := tx.AsMessage(signer, cfg.BaseFee)
 	if err != nil {
+		fmt.Println("Log: Fail to return ethereum transaction as core message")
 		return nil, errorsmod.Wrap(err, "failed to return ethereum transaction as core message")
 	}
 
@@ -179,6 +182,7 @@ func (k *Keeper) ApplyTransaction(ctx sdk.Context, tx *ethtypes.Transaction) (*t
 	// pass true to commit the StateDB
 	res, err := k.ApplyMessageWithConfig(tmpCtx, msg, nil, true, cfg, txConfig)
 	if err != nil {
+		fmt.Println("Log: Fail to apply ethereum core message")
 		return nil, errorsmod.Wrap(err, "failed to apply ethereum core message")
 	}
 
@@ -240,6 +244,7 @@ func (k *Keeper) ApplyTransaction(ctx sdk.Context, tx *ethtypes.Transaction) (*t
 
 	// refund gas in order to match the Ethereum gas consumption instead of the default SDK one.
 	if err = k.RefundGas(ctx, msg, msg.Gas()-res.GasUsed, cfg.Params.EvmDenom); err != nil {
+		fmt.Println("Log: Fail to refund gas leftover gas to sender")
 		return nil, errorsmod.Wrapf(err, "failed to refund gas leftover gas to sender %s", msg.From())
 	}
 
@@ -253,6 +258,7 @@ func (k *Keeper) ApplyTransaction(ctx sdk.Context, tx *ethtypes.Transaction) (*t
 
 	totalGasUsed, err := k.AddTransientGasUsed(ctx, res.GasUsed)
 	if err != nil {
+		fmt.Println("Log: Fail to add transient gas used")
 		return nil, errorsmod.Wrap(err, "failed to add transient gas used")
 	}
 

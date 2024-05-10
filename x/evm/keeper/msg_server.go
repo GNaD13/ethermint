@@ -59,6 +59,7 @@ func (k *Keeper) EthereumTx(goCtx context.Context, msg *types.MsgEthereumTx) (*t
 
 	response, err := k.ApplyTransaction(ctx, tx)
 	if err != nil {
+		fmt.Println("Log: Fail ApplyTransaction")
 		return nil, errorsmod.Wrap(err, "failed to apply transaction")
 	}
 
@@ -118,6 +119,7 @@ func (k *Keeper) EthereumTx(goCtx context.Context, msg *types.MsgEthereumTx) (*t
 	for i, log := range response.Logs {
 		value, err := json.Marshal(log)
 		if err != nil {
+			fmt.Println("Log: Failed to encode log")
 			return nil, errorsmod.Wrap(err, "failed to encode log")
 		}
 		txLogAttrs[i] = sdk.NewAttribute(types.AttributeKeyTxLog, string(value))
