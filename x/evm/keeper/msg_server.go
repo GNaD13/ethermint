@@ -41,6 +41,7 @@ var _ types.MsgServer = &Keeper{}
 // so that it can implements and call the StateDB methods without receiving it as a function
 // parameter.
 func (k *Keeper) EthereumTx(goCtx context.Context, msg *types.MsgEthereumTx) (*types.MsgEthereumTxResponse, error) {
+	fmt.Println("Log: Evm Keeper EthereumTx")
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	sender := msg.From
