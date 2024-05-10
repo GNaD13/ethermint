@@ -17,6 +17,7 @@ package eth
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 
@@ -226,12 +227,14 @@ func (e *PublicAPI) GetTransactionByBlockNumberAndIndex(blockNum rpctypes.BlockN
 
 // SendRawTransaction send a raw Ethereum transaction.
 func (e *PublicAPI) SendRawTransaction(data hexutil.Bytes) (common.Hash, error) {
+	fmt.Println("Log: SendRawTransaction")
 	e.logger.Debug("eth_sendRawTransaction", "length", len(data))
 	return e.backend.SendRawTransaction(data)
 }
 
 // SendTransaction sends an Ethereum transaction.
 func (e *PublicAPI) SendTransaction(args evmtypes.TransactionArgs) (common.Hash, error) {
+	fmt.Println("Log: SendTransaction")
 	e.logger.Debug("eth_sendTransaction", "args", args.String())
 	return e.backend.SendTransaction(args)
 }

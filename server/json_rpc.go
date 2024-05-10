@@ -16,6 +16,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -63,7 +64,9 @@ func StartJSONRPC(ctx *server.Context,
 
 	apis := rpc.GetRPCAPIs(ctx, clientCtx, tmWsClient, allowUnprotectedTxs, indexer, rpcAPIArr)
 
+	fmt.Println("Log: Start StartJSONRPC")
 	for _, api := range apis {
+		fmt.Println("Log: Namespace: ", api.Namespace)
 		if err := rpcServer.RegisterName(api.Namespace, api.Service); err != nil {
 			ctx.Logger.Error(
 				"failed to register service in JSON RPC namespace",

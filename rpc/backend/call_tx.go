@@ -117,6 +117,7 @@ func (b *Backend) Resend(args evmtypes.TransactionArgs, gasPrice *hexutil.Big, g
 
 // SendRawTransaction send a raw Ethereum transaction.
 func (b *Backend) SendRawTransaction(data hexutil.Bytes) (common.Hash, error) {
+	fmt.Println("Log: Backend SendRawTransaction")
 	// RLP decode raw transaction bytes
 	tx := &ethtypes.Transaction{}
 	if err := tx.UnmarshalBinary(data); err != nil {
