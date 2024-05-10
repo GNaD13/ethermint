@@ -16,6 +16,7 @@
 package ante
 
 import (
+	"fmt"
 	"math/big"
 
 	errorsmod "cosmossdk.io/errors"
@@ -126,6 +127,7 @@ func (mpd MinGasPriceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 // AnteHandle ensures that the that the effective fee from the transaction is greater than the
 // minimum global fee, which is defined by the  MinGasPrice (parameter) * GasLimit (tx argument).
 func (empd EthMinGasPriceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	fmt.Println("Log: EthMinGasPriceDecorator")
 	minGasPrice := empd.feesKeeper.GetParams(ctx).MinGasPrice
 
 	// short-circuit if min gas price is 0
@@ -189,6 +191,7 @@ func (empd EthMinGasPriceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 // This check only for local mempool purposes, and thus it is only run on (Re)CheckTx.
 // The logic is also skipped if the London hard fork and EIP-1559 are enabled.
 func (mfd EthMempoolFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	fmt.Println("Log: EthMempoolFeeDecorator")
 	if !ctx.IsCheckTx() || simulate {
 		return next(ctx, tx, simulate)
 	}

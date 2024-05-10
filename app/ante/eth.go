@@ -16,6 +16,7 @@
 package ante
 
 import (
+	"fmt"
 	"math"
 	"math/big"
 
@@ -60,6 +61,7 @@ func (avd EthAccountVerificationDecorator) AnteHandle(
 	simulate bool,
 	next sdk.AnteHandler,
 ) (newCtx sdk.Context, err error) {
+	fmt.Println("Log: EthAccountVerificationDecorator")
 	if !ctx.IsCheckTx() {
 		return next(ctx, tx, simulate)
 	}
@@ -135,6 +137,7 @@ func NewEthGasConsumeDecorator(
 // - sets the gas meter limit
 // - gas limit is greater than the block gas meter limit
 func (egcd EthGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
+	fmt.Println("EthGasConsumeDecorator")
 	gasWanted := uint64(0)
 	// gas consumption limit already checked during CheckTx so there's no need to
 	// verify it again during ReCheckTx
@@ -258,6 +261,7 @@ func NewCanTransferDecorator(evmKeeper EVMKeeper) CanTransferDecorator {
 // AnteHandle creates an EVM from the message and calls the BlockContext CanTransfer function to
 // see if the address can execute the transaction.
 func (ctd CanTransferDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
+	fmt.Println("Log: CanTransferDecorator")
 	params := ctd.evmKeeper.GetParams(ctx)
 	ethCfg := params.ChainConfig.EthereumConfig(ctd.evmKeeper.ChainID())
 	signer := ethtypes.MakeSigner(ethCfg, big.NewInt(ctx.BlockHeight()))
@@ -336,6 +340,7 @@ func NewEthIncrementSenderSequenceDecorator(ak evmtypes.AccountKeeper) EthIncrem
 // contract creation, the nonce will be incremented during the transaction execution and not within
 // this AnteHandler decorator.
 func (issd EthIncrementSenderSequenceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
+	fmt.Println("Log: EthIncrementSenderSequenceDecorator")
 	for _, msg := range tx.GetMsgs() {
 		msgEthTx, ok := msg.(*evmtypes.MsgEthereumTx)
 		if !ok {

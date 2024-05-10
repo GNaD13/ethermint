@@ -17,6 +17,7 @@ package ante
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
@@ -42,6 +43,7 @@ func NewEthSetUpContextDecorator(evmKeeper EVMKeeper) EthSetupContextDecorator {
 }
 
 func (esc EthSetupContextDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	fmt.Println("Log: EthSetupContextDecorator")
 	// all transactions must implement GasTx
 	_, ok := tx.(authante.GasTx)
 	if !ok {
@@ -71,6 +73,7 @@ func NewEthEmitEventDecorator(evmKeeper EVMKeeper) EthEmitEventDecorator {
 
 // AnteHandle emits some basic events for the eth messages
 func (eeed EthEmitEventDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	fmt.Println("Log: EthEmitEventDecorator")
 	// After eth tx passed ante handler, the fee is deducted and nonce increased, it shouldn't be ignored by json-rpc,
 	// we need to emit some basic events at the very end of ante handler to be indexed by tendermint.
 	txIndex := eeed.evmKeeper.GetTxIndexTransient(ctx)
@@ -106,6 +109,7 @@ func NewEthValidateBasicDecorator(ek EVMKeeper) EthValidateBasicDecorator {
 
 // AnteHandle handles basic validation of tx
 func (vbd EthValidateBasicDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
+	fmt.Println("Log: EthValidateBasicDecorator")
 	// no need to validate basic on recheck tx, call next antehandler
 	if ctx.IsReCheckTx() {
 		return next(ctx, tx, simulate)
