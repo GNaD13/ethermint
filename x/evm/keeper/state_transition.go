@@ -186,6 +186,8 @@ func (k *Keeper) ApplyTransaction(ctx sdk.Context, tx *ethtypes.Transaction) (*t
 		return nil, errorsmod.Wrap(err, "failed to apply ethereum core message")
 	}
 
+	fmt.Println("Log: ApplyTransaction: ", res)
+
 	logs := types.LogsToEthereum(res.Logs)
 
 	// Compute block bloom filter
